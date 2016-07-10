@@ -85,7 +85,7 @@ graphics.placeNode(function(ui, pos) {
 
   // then move corresponding dom label to its own position:
   var boundRect = renderer.getGraphics().getGraphicsRoot().getBoundingClientRect();
-  // console.log(boundRect);
+  //console.log(boundRect);
   //console.log("domPos.y" + domPos.y + "--- boundRect.height + boundRect.top" + Number(boundRect.height));
   var posX=0;
   var posY=0;

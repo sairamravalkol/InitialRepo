@@ -38,10 +38,10 @@ var maxNumOfConnectionsDisplayed = 1000;
 var nodeSize = 24; // size of node size for svg images
 
 /* ====== Graph Related ====== */
-var renderMethod = "webGL";   // options: webGL ,  SVG
-var renderNodesMode = "images"; // options: circles , images
+var renderMethod = "SVG";   // options: webGL ,  SVG
+var renderNodesMode = "circles"; // options: circles , images
 var zoomout = 7;
-var isDirectedGraph = true;
+var isDirectedGraph = false;
 var graph = null;
 var lastLink = null;
 var graphics = null;

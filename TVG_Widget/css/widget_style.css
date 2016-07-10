@@ -18,6 +18,7 @@ body, html {
   line-height: 1.5;
   margin: 0;
   padding: 0;
+  overflow:hidden;
 }
 
 svg {
@@ -35,7 +36,8 @@ svg {
   max-width: 100%;
 /*   margin-top:10px; */
   border: 1px dotted #374753;
-  height: 900px;
+/*  height: 900px; */
+	height: 900px;
 /*   border-bottom: 5px solid grey; */
 }
 
@@ -134,7 +136,7 @@ svg {
 
 .input_field {
 	float:left;
-	margin-left; 10px;
+	margin-left: 10px;
 }
 
 .input_wrapper{
@@ -195,6 +197,7 @@ svg {
 	  margin-top: 100px;
 	  margin-left: 15px;
 	  font-size: 10px;
+	  cursor: pointer;
 } 
 
 .edge-label {
@@ -223,5 +226,15 @@ svg {
 	background-position: -53px -26px ;
 	width: 24px;
 	height: 21px;
+}
+
+/* ===== IF SCREEN SIZE IS AT MOST 1680 PX RESOLUTION ========= */
+@media only screen and (max-width: 1920px)
+{
+	#main
+	{
+		height: 600px;
+	}
+
 }
 

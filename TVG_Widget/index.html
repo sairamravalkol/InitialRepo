@@ -3,6 +3,9 @@
 <html>
   <head>
     <meta charset="utf-8">
+	<!-- <meta http-equiv="Content-Security-Policy" content="connect-src 'self'"> -->
+	  <!-- The above prevents webSockets requests from any place but the current server. It also prevents CORS and EventSource requests. -->
+	  <!--  The same-origin policy prevents a request made from one page to another if their origin is different. -->
     <title>TVG Widget</title>
 	 <link rel="shortcut icon" href="img/icons/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/widget_style.css" media="screen" />
@@ -76,9 +79,8 @@
  	 <script type="text/javascript" src="lib/vivagraph/vivagraph.js"></script>  
 	 
 	<!-- CUSTOM SCRIPTS -->
-	<script type="text/javascript" src="js/drawGraph.js"></script>
 	<script type="text/javascript" src="js/drawGraphWebGl.js"></script>
-		<script type="text/javascript" src="js/drawGraphLabels.js"></script>
+		<script type="text/javascript" src="js/drawGraphSVG.js"></script>
 	<script type="text/javascript" src="js/timeComponents.js"></script> 
 	<script type="text/javascript" src="js/globalParameters.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>

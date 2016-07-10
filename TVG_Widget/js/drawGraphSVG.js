@@ -160,7 +160,7 @@ function drawGraphLabels(graphData)
 			{	
 			console.log("Link from " + link.fromId + " to " + link.toId + " at time: " + link.data.action_time);
 			showMetadata("link", link);	
-			$(label).show();
+			 $(label).show().delay(3000).fadeOut();;
 			}
 			
 			// set the line color, opacity and width
@@ -203,7 +203,8 @@ function drawGraphLabels(graphData)
 				.attr('cursor', 'pointer')
 				.attr('fill', '#00B388')
 				.attr("x", (from.x + to.x) / 2)
-				.attr("y", (from.y + to.y) / 2); 			
+				.attr("y", (from.y + to.y) / 2);
+
 		}); 
 
 	// Add nodes and links to Graph
@@ -212,6 +213,7 @@ function drawGraphLabels(graphData)
 	for (var i=0; i<numOfConnectionsToDisplay;i++)
 	{
 		var edge = graphData.edges[i];
+		var edgeId = edge._id;
 		var source = edge._inV;
 		var dest = edge._outV;
 		var epoch = edge.epoch;
@@ -220,7 +222,7 @@ function drawGraphLabels(graphData)
 		
 		addNodeToGraph(source, graphData);
 		addNodeToGraph(dest, graphData);
-		addLinkToGraph(source, dest, epoch);
+		addLinkToGraph(source, dest, epoch, edgeId);
 	}
 
 

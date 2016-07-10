@@ -6,11 +6,16 @@ $(document).ready(function(){
 	init();	
 });
 
+$(window).resize(function(){
+	adjustResolution();
+});
+
 function init()
 {
 console.log("document / web page ready...");
-initializeWidget();
-initWebSocket();
+	adjustResolution();
+	initializeWidget();
+	initWebSocket();
 }
 
 
@@ -50,6 +55,17 @@ headerVisibility();
 	{
 	listenToContainerClickEvents();
 	}
+}
+
+function adjustResolution()
+{
+var screenHeight = $(document).height();
+//alert(screenHeight);
+var main = document.getElementById("main");
+var page_header_height = document.getElementById("page_header").style.height;
+var footer_height = document.getElementById("footer").style.height;
+var main_height = Math.min(screenHeight- (page_header_height + footer_height + 200), 0.8*screenHeight);
+main.style.height = main_height +"px";
 }
 
 function listenToContainerClickEvents()
@@ -227,14 +243,14 @@ function addNodeToGraph(node, graphData)
 	}
 }
 
-function addLinkToGraph(source, dest, epoch)
+function addLinkToGraph(source, dest, epoch, edgeId)
 {
 	if (graph.getLink(source, dest) == null && graph.getLink(dest, source) == null)
 	{
 		graph.addLink(source, dest, {
 			// add more data as required
 			action_time: epoch,
-			id: epoch
+			id: edgeId
 		});	
 	}		
 }
