@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+	<!-- <meta http-equiv="Content-Security-Policy" content="connect-src 'self'"> -->
+	  <!-- The above prevents webSockets requests from any place but the current server. It also prevents CORS and EventSource requests. -->
+	  <!--  The same-origin policy prevents a request made from one page to another if their origin is different. -->
+    <title>TVG Widget</title>
+	 <link rel="shortcut icon" href="img/icons/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/widget_style.css" media="screen" />
+  </head>
+  <body>
+    <div id="page_wrapper">
+	    <!-- #header -->
+		<div id="page_header" >
+			<div style="float: left;">
+				<div><img id="HPE_Labs_logo" src="img/HPELabsSymbolAndTextCreatedByWhite.png" ></div>
+			</div>
+			<div style="float: left; padding-top: 12px;">
+				<span id="demo_title">IT Security Investigation</span>
+			</div>		
+			<div style="float: right;">
+				<img id="HPE_logo" src="img/HPEnterpriseMainLogoWhite.png" \>
+			</div>
+		</div> 	<!-- end of header -->
+		
+	
+		<!--   #main    -->
+		<div id="main">		
+			<div class="input_wrapper">
+				<!-- VG Container -->
+				<div id="VGcontainer" >
+				</div>
+				<!-- End of VG Container -->
+			
+				<span id="ws_indication_circle" title="disconnected from server"></span>
+				<!-- Time and Vertices Inputs -->
+				<div id="timeFieldsContainer">	
+								
+					<span id="start_date_text" >Start Date:</span>
+					<span>
+						<input class='field' type="date" id="start_date" name="start_date" disabled />
+						<input class='field' type="time" id="start_time" name="start_time" disabled />
+						<input class='field' type="text" id="start_time_microseconds" hidden />
+					</span>
+					
+					<span id="end_date_text"  >End Date:</span>
+					<span>
+						<input class='field' type="date" id="end_date" name="end_date" disabled />
+						<input class='field' type="time" id="end_time" name="end_time" disabled />
+						<input class='field' type="text" id="end_time_microseconds" hidden />
+					</span>
+				</div>
+				<!-- End of Time and Vertices Inputs -->
+			</div>
+			<!-- End of input_wrapper -->
+		</div> <!-- end of main -->		
+		
+	<!-- #footer -->
+    <div id="footer">
+		<div id="metadata_title" class='input_title_wrapper' ></div>
+		<div id="metadata_fields_wrapper">
+		</div>
+	</div>
+	
+		
+    </div> <!-- end of page wrapper -->
+	
+	
+	<!-- ************************ SCRIPTS ************************ -->
+
+	<!-- CUSTOM SCRIPTS -->
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/jquery-ui-1.11.2.js"></script>
+	
+	<!-- VIVAGRAPH -->
+<!-- 	 <script type="text/javascript" src="lib/vivagraph/vivagraph_const.js"></script>  -->
+ 	 <script type="text/javascript" src="lib/vivagraph/vivagraph.js"></script>  
+	 
+	<!-- CUSTOM SCRIPTS -->
+	<script type="text/javascript" src="js/drawGraphWebGl.js"></script>
+		<script type="text/javascript" src="js/drawGraphSVG.js"></script>
+	<script type="text/javascript" src="js/timeComponents.js"></script> 
+	<script type="text/javascript" src="js/globalParameters.js"></script>
+	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/serverInteractions.js"></script>
+  </body>
+</html>
