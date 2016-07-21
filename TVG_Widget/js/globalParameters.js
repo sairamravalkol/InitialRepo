@@ -24,6 +24,7 @@ var undefinedNodeColor = "pink";
 var undefinedNodeColorHex = "0xFFC0CB";
 var arrowTriangleColor = "white";
 var transparentColor = "0x00374753";
+var selectedNodeColorWebGl = 0xFFA500FF;
 
 /* ====== Sizes ====== */
 var defaultNodeSize = 15;
@@ -38,7 +39,7 @@ var maxNumOfConnectionsDisplayed = 1000;
 var nodeSize = 24; // size of node size for svg images
 
 /* ====== Graph Related ====== */
-var renderMethod = "SVG";   // options: webGL ,  SVG
+var renderMethod = "webGL";   // options: webGL ,  SVG
 var renderNodesMode = "circles"; // options: circles , images
 var zoomout = 7;
 var isDirectedGraph = false;
@@ -48,7 +49,12 @@ var graphics = null;
 var layout = null;
 var renderer = null;
 var firstTimeGraphDraw = true;
-var distanceAccuracyFromLink = 1; // the distance allowed when clicking a link 
+var distanceAccuracyFromLink = 1; // the distance allowed when clicking a link
+var timeWaitBeforeFreezeAnimation = 8000; // after this many milliseconds the graph freezes and stops rendering.
+var selectedNodeColor = "red";
+var selectedBorderColor = "red";
+var lastSelectedNodeId="";
+var lastSelectedNodeColor="";
 
 // Graph initialization params
 var	customSpringLength =  300;
@@ -59,6 +65,9 @@ var	customGravity = -1.2;
 // Graph Images
 var personalCompImgUrl = "img/icons/personal.gif" ;
 var serverImgUrl = "img/icons/server.gif";
+var selectedPersonalCompImgUrl = "img/icons/selectedPersonal.gif" ;
+var selectedServerImgUrl = "img/icons/selectedServer.gif" ;
+var lastSelectedImgSrc = "";
 
 /* ====== Time Related ====== */
 var displayTimeRelatedComponent = false;
