@@ -70,6 +70,36 @@ function drawGraphLabels(graphData)
 		}); 
 
 		$(newNode).click(function () {
+			if (renderNodesMode==="circles")
+			{
+				if (lastSelectedNodeId !== "") {
+					graphics.getNodeUI(lastSelectedNodeId).children[0].attr("fill", lastSelectedNodeColor);
+				}
+				lastSelectedNodeId = node.id;
+				lastSelectedNodeColor = this.children[0].attr("fill");
+				this.children[0].attr("fill", selectedNodeColor);
+			}
+			else
+			{
+				//console.log(graphics.getNodeUI(node.id).children[0].href.baseVal);
+
+				if (lastSelectedImgSrc !== "") {
+					graphics.getNodeUI(lastSelectedNodeId).children[0].setAttributeNS('http://www.w3.org/1999/xlink', 'href', lastSelectedImgSrc);
+				}
+				
+				lastSelectedNodeId = node.id;
+				lastSelectedImgSrc = graphics.getNodeUI(node.id).children[0].href.baseVal;
+
+				if (node.data.machine_type==="personal") {
+					this.children[0].setAttributeNS('http://www.w3.org/1999/xlink', 'href', selectedPersonalCompImgUrl);
+				}
+				else if(node.data.machine_type==="server"){
+					this.children[0].setAttributeNS('http://www.w3.org/1999/xlink', 'href', selectedServerImgUrl);
+				}
+				else{
+					console.log("unrecognized machine type: " + node.data.machine_type);
+				}
+			}
 			showMetadata("node", node);	
 		});
 		
@@ -225,5 +255,5 @@ function drawGraphLabels(graphData)
 		addLinkToGraph(source, dest, epoch, edgeId);
 	}
 
-
+	setTimeout(function(){ renderer.pause(); }, timeWaitBeforeFreezeAnimation);
 }
