@@ -8,95 +8,81 @@
 #include <thread>
 
 #include <Vertica.h>
-#include "tvg_index.h"
+#include <Graph/Header/MyGraph.h>
+#include <log4cpp/PropertyConfigurator.hh>
+#include "General/Header/tvg_index.h"
 
-#define BINARY_MAX 65000
 
 using namespace Vertica;
 
 class ProcessInput : public TransformFunction {
+private:
+    MyGraph _graph;
 
 public:
 
-    ProcessInput() : log_level(true) { }
-
-    bool log_level;
-
-    void const log(ServerInterface &srvInterface, const std::string msg) {
-        log(srvInterface, msg.data());
+    virtual void setup(ServerInterface &srvInterface,
+                       const SizedColumnTypes &argTypes) {
+        std::string log_prop_file = "/tmp/log4cpp.properties";
+        log4cpp::PropertyConfigurator::configure(log_prop_file);
     }
 
-    void const log(ServerInterface &srvInterface, const char *msg)  {
-        if (log_level) {
-            srvInterface.log("%s", msg);
-        }
+    virtual void destroy(ServerInterface &srvInterface, const SizedColumnTypes &argTypes) {
+        _graph.Finalize();
     }
 
 
     virtual void processPartition(ServerInterface &srvInterface,
                                   PartitionReader &inputReader,
                                   PartitionWriter &outputWriter) {
-
-
         std::stringstream id;
         id << std::this_thread::get_id();
-        std::string msg = "Part::processPartition start tid: (" + id.str() + ") processing for source: " + std::to_string(inputReader.getIntRef(0));
-        log(srvInterface, msg);
-
+        log4cpp::Category::getRoot().debug("ProcessInput::processPartition start thread id: (" + id.str() + ") processing for source: " + std::to_string(inputReader.getIntRef(0)));
         try {
-            tvg_index *destination_array;
-            tvg_index *epoch_array;
-
-            destination_array = new tvg_index[BINARY_MAX / sizeof(tvg_index)];
-            epoch_array = new tvg_index[BINARY_MAX / sizeof(tvg_index)];
 
             int index = 0;
             vint source = 0;
             vint destination = 0;
             vint epoch = 0;
+
+
+            std::unique_ptr<Modification> event;
             do {
                 source = inputReader.getIntRef(0);
                 destination = inputReader.getIntRef(1);
                 epoch = inputReader.getIntRef(2);
 
-                destination_array[index] = destination;
-                epoch_array[index] = epoch;
+                // creating modification with random UID
+                event = std::make_unique<Modification>(Modification(random()));
+                event->SetSource(source);
+                event->SetDestination(destination);
+                event->SetEpoc(epoch);
+
+                _graph.AddDirectedModification(std::move(event));
                 index++;
 
             } while (inputReader.next());
+            log4cpp::Category::getRoot().debug("_graph.GetVertexCount(): %llu" + _graph.GetVertexCount());
 
-
-            log(srvInterface, "count of dest : " + std::to_string(index));
-            for (int i = 0; i < index; ++i) {
-                log(srvInterface, "dest: " + std::to_string(destination_array[i].Get()));
-            }
-
-            outputWriter.setInt(0, source);
-            outputWriter.setInt(1, index);
-            outputWriter.getStringRef(2).copy((char *) destination_array, index * sizeof(tvg_index));
-            outputWriter.getStringRef(3).copy((char *) epoch_array, index * sizeof(tvg_index));
+            outputWriter.setInt(0, index);
             outputWriter.next();
 
         } catch (std::exception &e) {
             // Standard exception. Quit.
             vt_report_error(0, "Exception while processing partition: [%s]", e.what());
         }
-        msg = "Part::processPartition finish tid: (" + id.str() + ") processing for source: " + std::to_string(inputReader.getIntRef(0));
-        log(srvInterface, msg);
+        log4cpp::Category::getRoot().debug("ProcessInput::processPartition finish tid: (" + id.str() + ") processing for source: " + std::to_string(inputReader.getIntRef(0)));
     }
 };
 
 class ProcessInputFactory : public TransformFunctionFactory {
 // Provide the function prototype information to the Vertica server (argument types + return types)
     virtual void getPrototype(ServerInterface &srvInterface, ColumnTypes &argTypes, ColumnTypes &returnType) {
-        argTypes.addInt();
-        argTypes.addInt();
-        argTypes.addInt();
+        argTypes.addInt();  // source
+        argTypes.addInt();  // destination
+        argTypes.addInt();  // epoch
 
-        returnType.addInt();
-        returnType.addInt();
-        returnType.addBinary(); // dest
-        returnType.addBinary(); // epochs
+        returnType.addInt();    // partition length
     }
 
 // Provide return type length/scale/precision information (given the input
@@ -104,10 +90,7 @@ class ProcessInputFactory : public TransformFunctionFactory {
     virtual void getReturnType(ServerInterface &srvInterface,
                                const SizedColumnTypes &inputTypes,
                                SizedColumnTypes &outputTypes) {
-        outputTypes.addInt("source");
-        outputTypes.addInt("array_count");
-        outputTypes.addBinary(BINARY_MAX, "destination_array");
-        outputTypes.addBinary(BINARY_MAX, "epoch_array");
+        outputTypes.addInt("partition_length");
     }
 
 // Create an instance of the TransformFunction
