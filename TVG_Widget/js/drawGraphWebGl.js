@@ -146,7 +146,47 @@ events.mouseEnter(function (node) {
 	layout.pinNode(node, !layout.isNodePinned(node));
 }).click(function (node) {
 	console.log('Single click on node: ' + node.id);
-	console.log(node);
+	if (renderNodesMode==="circles")
+	{
+		if (lastSelectedNodeId !== "") {
+			renderer.getGraphics().getNodeUI(lastSelectedNodeId).color = lastSelectedNodeColor;
+		}
+		lastSelectedNodeId = node.id;
+		lastSelectedNodeColor = renderer.getGraphics().getNodeUI(node.id).color;
+		renderer.getGraphics().getNodeUI(node.id).color = selectedNodeColorWebGl;
+	}
+	else
+	{
+		console.log("node id is: "+ node.id);
+		//console.log(renderer.getGraphics().getNodeUI(node.id));
+		var servers = document.getElementsByClassName("server");
+		for (var i=0; i<servers.length;i++)
+		{
+			if(servers[i].id===node.id)
+			{
+				console.log(servers[i]);
+				servers[i].style.border = "2px solid "+selectedBorderColor;
+			}
+			else
+			{
+				servers[i].style.border = "none";
+			}
+		}
+
+		var personal_comps = document.getElementsByClassName("personal");
+		for (var i=0; i<personal_comps.length;i++)
+		{
+			if(personal_comps[i].id===node.id)
+			{
+				console.log(personal_comps[i]);
+				personal_comps[i].style.border = "2px solid "+selectedBorderColor;
+			}
+			else
+			{
+				personal_comps[i].style.border = "none";
+			}
+		}
+	}
 	showMetadata("node", node);
 });
 
@@ -212,6 +252,8 @@ renderer.run();
 	  var labels = Object.create(null);
 	  graph.forEachNode(function(node) {
 		var label = document.createElement('span');
+		  console.log(node.id);
+		label.id = node.id;
 		label.classList.add('node-label');
 		var vertex_metadata = getVertexInVetricesObject(node.id, graphData.vertices);	
 		var className = getImageClassByType(vertex_metadata.machine_type);
@@ -224,6 +266,8 @@ renderer.run();
 	  });
 	  return labels;
 	}
+
+	// setTimeout(function(){ renderer.pause(); }, timeWaitBeforeFreezeAnimation);
 	
 }
 
