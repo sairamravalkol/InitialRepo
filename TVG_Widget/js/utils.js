@@ -363,6 +363,8 @@ function showMetadata(type, obj)
 //	metadataWrapper.innerHTML="";
 }
 
+
+
 function updatePlaceholderWithAttribute(label, value)
 {
 	if (label!==undefined)	
