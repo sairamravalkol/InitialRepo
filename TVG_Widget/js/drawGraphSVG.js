@@ -70,6 +70,11 @@ function drawGraphLabels(graphData)
 		}); 
 
 		$(newNode).click(function () {
+			// un mark all edges - in case we previously selected an edge
+			graph.forEachLink(function(link) {
+				graphics.getLinkUI(link.id).attr('stroke', defaultLinkColor).attr('stroke-width', lineWidth);
+			});
+
 			if (renderNodesMode==="circles")
 			{
 				if (lastSelectedNodeId !== "") {
@@ -167,30 +172,62 @@ function drawGraphLabels(graphData)
 			
 			var handleLineHover = function()
 			{
-			var actionTime = Number(link.data.action_time) - getTimeOffset();
-			actionTime = actionTime+'';
-			var actionTimeWithoutMicroSeconds = Number(actionTime.substring(0,13));
-			var actionTimeDateFormat = new Date(actionTimeWithoutMicroSeconds);
-			var d = actionTimeDateFormat;
-			var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-			// console.log("Link from " + link.fromId + " to " + link.toId + " at time: " + datestring);
-			line
-			.attr('stroke', lineHoverColor)
-			.attr('stroke-width', lineHoverStrokeWidth);					
+				if (line.attr('stroke')!==lineClickColor)
+				{
+					var actionTime = Number(link.data.action_time) - getTimeOffset();
+					actionTime = actionTime + '';
+					var actionTimeWithoutMicroSeconds = Number(actionTime.substring(0, 13));
+					var actionTimeDateFormat = new Date(actionTimeWithoutMicroSeconds);
+					var d = actionTimeDateFormat;
+					var datestring = d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+					// console.log("Link from " + link.fromId + " to " + link.toId + " at time: " + datestring);
+					line
+						.attr('stroke', lineHoverColor)
+						.attr('stroke-width', lineHoverStrokeWidth);
+				}
 			}
 
 			var handleLineHoverOut = function()
 			{
-			line
-			.attr('stroke', defaultLinkColor)
-			.attr('stroke-width', lineWidth);
+				if (line.attr('stroke')!==lineClickColor)
+				{
+					line
+						.attr('stroke', defaultLinkColor)
+						.attr('stroke-width', lineWidth);
+				}
 			}
 			
 			var handleLineClick = function()
-			{	
+			{
+			// un mark all edges
+			graph.forEachLink(function(link) {
+				graphics.getLinkUI(link.id).attr('stroke', defaultLinkColor).attr('stroke-width', lineWidth);
+			});
+
 			console.log("Link from " + link.fromId + " to " + link.toId + " at time: " + link.data.action_time);
-			showMetadata("link", link);	
-			 $(label).show().delay(3000).fadeOut();;
+			showMetadata("link", link);
+			line
+				.attr('stroke', lineClickColor)
+				.attr('stroke-width', lineClickStrokeWidth);
+			 $(label).show().delay(3000).fadeOut();
+				// if node is selected, unselect it
+				if (renderNodesMode==="circles")
+				{
+					if (lastSelectedNodeId !== "") {
+						graphics.getNodeUI(lastSelectedNodeId).children[0].attr("fill", lastSelectedNodeColor);
+						lastSelectedNodeId = "";
+						lastSelectedNodeColor="";
+					}
+				}
+				else
+				{
+					if (lastSelectedImgSrc !== "")
+					{
+						graphics.getNodeUI(lastSelectedNodeId).children[0].setAttributeNS('http://www.w3.org/1999/xlink', 'href', lastSelectedImgSrc);
+						lastSelectedNodeId = "";
+						lastSelectedImgSrc = "";
+					}
+				}
 			}
 			
 			// set the line color, opacity and width
