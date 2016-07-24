@@ -38,7 +38,6 @@ public class StartBfsService implements Runnable {
 
 	public StartBfsService() {
 		// TODO Auto-generated constructor stub
-
 	}
 
 	public StartBfsService(StartBfsBean queryBeanpara) {
