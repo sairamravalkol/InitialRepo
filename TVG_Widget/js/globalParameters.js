@@ -43,7 +43,7 @@ var nodeSize = 24; // size of node size for svg images
 
 /* ====== Graph Related ====== */
 var renderMethod = "webGL";   // options: webGL ,  SVG
-var renderNodesMode = "images"; // options: circles , images
+var renderNodesMode = "circles"; // options: circles , images
 var zoomout = 7;
 var isDirectedGraph = false;
 var graph = null;
