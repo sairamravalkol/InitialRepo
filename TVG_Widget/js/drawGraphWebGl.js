@@ -50,14 +50,18 @@ highlightRelatedNodes = function (nodeId, isOn)
 		if (linkUI) {
 			if (isOn)
 			{
-			linkUI.color = -8582934;
+				if (linkUI.color !== selectedLineColorWebGL)
+				{
+					linkUI.color = -8582934;
+				}
 			}
 			else
 			{
 			  graph.forEachLink(function(link) {
 				var line =  renderer.getGraphics().getLinkUI(link.id);
-				/* line.color = -858993409; */  // yellow: -85899340, pink: -8589934, 
-				line.color = -858993409;
+				  if (line.color !== selectedLineColorWebGL) {
+					  line.color = -858993409;
+				  }
 				});
 			}
 		}
@@ -141,11 +145,13 @@ events.mouseEnter(function (node) {
 //	console.log('Mouse left node: ' + node.id);
 	highlightRelatedNodes(node.id, false);
 }).dblClick(function (node) {
-	console.log('Double click on node: ' + node.id);
-	console.log(node);
+	//console.log('Double click on node: ' + node.id);
+	//console.log(node);
 	layout.pinNode(node, !layout.isNodePinned(node));
 }).click(function (node) {
-	console.log('Single click on node: ' + node.id);
+	//console.log('Single click on node: ' + node.id);
+	// reset all links to default edge color - in case we have an edge selected.
+	resetAllToDefaultEdgeColor();
 	if (renderNodesMode==="circles")
 	{
 		if (lastSelectedNodeId !== "") {
@@ -157,14 +163,13 @@ events.mouseEnter(function (node) {
 	}
 	else
 	{
-		console.log("node id is: "+ node.id);
+		//console.log("node id is: "+ node.id);
 		//console.log(renderer.getGraphics().getNodeUI(node.id));
 		var servers = document.getElementsByClassName("server");
 		for (var i=0; i<servers.length;i++)
 		{
 			if(servers[i].id===node.id)
 			{
-				console.log(servers[i]);
 				servers[i].style.border = "2px solid "+selectedBorderColor;
 			}
 			else
@@ -178,7 +183,6 @@ events.mouseEnter(function (node) {
 		{
 			if(personal_comps[i].id===node.id)
 			{
-				console.log(personal_comps[i]);
 				personal_comps[i].style.border = "2px solid "+selectedBorderColor;
 			}
 			else
@@ -252,7 +256,7 @@ renderer.run();
 	  var labels = Object.create(null);
 	  graph.forEachNode(function(node) {
 		var label = document.createElement('span');
-		  console.log(node.id);
+	//	  console.log(node.id);
 		label.id = node.id;
 		label.classList.add('node-label');
 		var vertex_metadata = getVertexInVetricesObject(node.id, graphData.vertices);	

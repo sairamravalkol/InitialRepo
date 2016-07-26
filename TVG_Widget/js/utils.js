@@ -88,7 +88,7 @@ var boundRect = renderer.getGraphics().getGraphicsRoot().getBoundingClientRect()
 clientPos.x = e.clientX - boundRect.left;
 clientPos.y = e.clientY - boundRect.top;
 this.renderer.getGraphics().transformClientToGraphCoordinates(clientPos);
-resetAllToDefaultEdgeColor();
+
 	graph.forEachLink(function(link) 
 	{
 		var line =  renderer.getGraphics().getLinkUI(link.id);
@@ -96,9 +96,33 @@ resetAllToDefaultEdgeColor();
 		if (distanceFromLine < distanceAccuracyFromLink)
 		{
 			clearAllEdgeLabels();
-			createEdgeLabel(link, e);	
-			line.color = -45229240;
+			createEdgeLabel(link, e);
+			resetAllToDefaultEdgeColor();
+			line.color = selectedLineColorWebGL;
 			showMetadata("link", link);
+			// un mark selected node if selected
+			if (renderNodesMode==="circles")
+			{
+				if (lastSelectedNodeId !== "") {
+					renderer.getGraphics().getNodeUI(lastSelectedNodeId).color = lastSelectedNodeColor;
+				}
+				lastSelectedNodeId = "";
+				lastSelectedNodeColor = "";
+			}
+			else
+			{
+				var servers = document.getElementsByClassName("server");
+				for (var i=0; i<servers.length;i++)
+				{
+					servers[i].style.border = "none";
+				}
+
+				var personal_comps = document.getElementsByClassName("personal");
+				for (var i=0; i<personal_comps.length;i++)
+				{
+					personal_comps[i].style.border = "none";
+				}
+			}
 		}
 	});		
 }

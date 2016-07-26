@@ -17,6 +17,7 @@ var newLinkColorInPlayMode = "#fa6400";
 var defaultNodeColor = "#7AD3EA";  /* light blue */
 var defaultNodeColorHex = "0x7AD3EA"; /* light blue for use with webGL*/
 var lineHoverColor  = "purple";
+var lineClickColor  = "red";
 var ws_inactive_color = "red";
 var ws_active_color = "#69c773";
 var svgStrokeColor = "black";
@@ -25,6 +26,7 @@ var undefinedNodeColorHex = "0xFFC0CB";
 var arrowTriangleColor = "white";
 var transparentColor = "0x00374753";
 var selectedNodeColorWebGl = 0xFFA500FF;
+var selectedLineColorWebGL = -95529240;
 
 /* ====== Sizes ====== */
 var defaultNodeSize = 15;
@@ -33,6 +35,7 @@ var pageRank_factor = 25;
 var minNodeSize = 15;
 var maxNodeSize = 35;
 var lineHoverStrokeWidth = 2;
+var lineClickStrokeWidth = 2;
 var lineWidth = 1;
 var svgStrokeWidth = 1;
 var maxNumOfConnectionsDisplayed = 1000;
