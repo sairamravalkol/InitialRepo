@@ -56,7 +56,7 @@ public class ShowGraphService implements Runnable	{
 	public Response showGraph(@QueryParam("tid") String taskId) {
 	
 		
-		if(taskId!=null && !taskId.equals("null") && !taskId.isEmpty())
+		if(taskId.matches("^[0-9]*$") && taskId!=null && !taskId.equals("null") && !taskId.isEmpty())
 		{
 			queryBean = new StartBfsBean();
 			queryBean.setTaskId(taskId);
@@ -95,7 +95,7 @@ public class ShowGraphService implements Runnable	{
 			{
 				
 				ResponseErrorMessageBean errorMessageBean = new ResponseErrorMessageBean();
-				errorMessageBean.setErrorMessage("Task is not completed...");
+				errorMessageBean.setErrorMessage("Status : Not Completed");
 				GraphsonUtil graphsonUtil = new GraphsonUtil();
 				responseJsonErrorMessage = graphsonUtil.jsonResponseErrorMessage(errorMessageBean);
 
