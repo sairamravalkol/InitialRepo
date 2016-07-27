@@ -17,6 +17,14 @@ import tvg.hpl.hp.com.dao.DeleteGraphDao;
 import tvg.hpl.hp.com.dao.ShowGraphDao;
 import tvg.hpl.hp.com.util.GraphsonUtil;
 
+/**
+ * The API will instruct the web service to ERASE (result) graph, 
+ * which is already stored in Vertica.
+ * the function will erase the graph that it attached to tid.
+ * @author JIBAN SHARMA
+ * @author SAIRAM RAVALKOL
+ * @version 1.0 22/07/2016
+ */
 @Path("/DeleteGraph")
 public class DeleteGraphService {
 	static Logger log = LoggerFactory.getLogger(DeleteGraphService.class);
@@ -29,7 +37,13 @@ public class DeleteGraphService {
 	public DeleteGraphService() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	/**
+	 * the function will erase the graph that it attached to tid.
+	 * @param taskId, tid - task id. The id of a previously computed
+	 *  graph which resulted from a call to StartBFS.
+	 * @return Return success or failed json response to the caller.
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response  deleteGraph(@QueryParam("tid") String taskId) {
@@ -62,7 +76,7 @@ public class DeleteGraphService {
 
 					return Response.status(202).entity(responseJsonMessage).type(MediaType.APPLICATION_JSON).build();
 
-			}
+			} // end if
 			else
 			{
 
@@ -76,9 +90,9 @@ public class DeleteGraphService {
 				 * message
 				 */
 				return Response.status(400).entity(responseJsonErrorMessage).type(MediaType.APPLICATION_JSON).build();
-			}
+			} // end else
 
-		}
+		}// end if
 		else
 		{
 			ResponseErrorMessageBean errorMessageBean = new ResponseErrorMessageBean();
@@ -92,8 +106,8 @@ public class DeleteGraphService {
 			 */
 			return Response.status(400).entity(responseJsonErrorMessage).type(MediaType.APPLICATION_JSON).build();
 
-		}
+		} // end else
 
 
-	}
-}
+	}// end deleteGraph
+} // end DeleteGraphService

@@ -23,8 +23,12 @@ import tvg.hpl.hp.com.util.GraphsonUtil;
 import tvg.hpl.hp.com.websocket.TVGWidget;
 
 /**
- * 
- * @author Sairam Ravalkol
+ * The API will instruct the web service to send a new (result) graph, 
+ * which is already stored in Vertica, to the attached TVG widget.
+ * The service will format the results according to a GraphSON schema,
+ *
+ * @author JIBAN SHARMA JYOTHI
+ * @author SAIRAM RAVALKOL
  * @version 1.0 22/07/2016
  */
 @Path("/ShowGraph")
