@@ -7,7 +7,8 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tvg.hpl.hp.com.bean.StartBfsBean;
+import tvg.hpl.hp.com.bean.QueryResultBean;
+import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.DataBaseUtility;
 
 public class DeleteGraphDao {
@@ -15,32 +16,29 @@ public class DeleteGraphDao {
 	private BasicDataSource datasource;
 	private Connection connection;
 	private PreparedStatement pstmt;
+	private QueryResultBean QueryResultBean;
 
 	public DeleteGraphDao() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public StartBfsBean delete(StartBfsBean queryBean) {
-		// TODO Auto-generated method stub
-
-		if (queryBean != null) {
+	public QueryResultBean deleteSubGRaphByTaskId(String taskId) {
+	
+		if (taskId != null) {
 			datasource = DataBaseUtility.getVerticaDataSource();
 			try {
-				String taskId = queryBean.getTaskId();
 				String query = "DELETE FROM tvg4tm.ws_result WHERE task_id = " + taskId;
-				System.out.println("DELETE query:" + query);
-				log.info("Query : " + query);
+				log.info("DELETE query:" + query);
 				connection = datasource.getConnection();
 				pstmt = connection.prepareStatement(query);
 				int executeUpdate = pstmt.executeUpdate();
-				System.out.println("Number of Deleted Records:"+executeUpdate);
-				
-				queryBean.setTaskId(taskId);
+				QueryResultBean = new QueryResultBean();
+				QueryResultBean.setTaskId(taskId);
 				if (executeUpdate==0) {
-					queryBean.setStatus("1");
+					QueryResultBean.setStatus("1");
 
 				} else {
-					queryBean.setStatus("0");
+					QueryResultBean.setStatus("0");
 
 				}
 			} catch (SQLException e) {
@@ -58,8 +56,43 @@ public class DeleteGraphDao {
 			}
 
 		}
-		return queryBean;
-
+		return QueryResultBean;
+	}
+	public QueryResultBean updateTokenDeleteStatusByTaskId(String taskId) {
+		log.info("Update taskId:"+taskId);
+		if (taskId != null && taskId != "") {
+			datasource = DataBaseUtility.getVerticaDataSource();
+			try {
+				String query = "Update tvg4tm.ws_user_query set request_status='"+ApplicationConstants.REQUEST_STATUS_DELETED +"' where task_id=" + taskId;
+				System.out.println("Update Query :"+query);
+				log.info("Update Query :"+query);
+				connection = datasource.getConnection();
+				connection.setAutoCommit(false);
+				pstmt = connection.prepareStatement(query);
+				pstmt.executeUpdate();
+				connection.commit();
+				QueryResultBean = new QueryResultBean();
+				QueryResultBean.setTaskId(taskId);
+				QueryResultBean.setStatus(ApplicationConstants.REQUEST_STATUS_DELETED);
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+					log.error("Error in Updating deleted task id Status:"+e.getMessage());
+				} catch (SQLException e1) {
+					log.error("Error in rollback in updateTokenDeleteStatusByTaskId :"+e1.getMessage());
+				}
+			} finally {
+				try {
+					if (pstmt != null)
+						pstmt.close();
+					if (connection != null)
+						connection.close();
+				} catch (Exception ex) {
+					log.error("Error in closing connections in updateTokenDeleteStatusByTaskId :"+ex.getMessage());
+				}
+			}
+		}
+		return QueryResultBean;
 	}
 
 }
