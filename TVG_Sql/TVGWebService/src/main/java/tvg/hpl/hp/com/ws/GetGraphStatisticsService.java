@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,7 +21,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import tvg.hpl.hp.com.bean.GetGraphStatisticsBean;
 import tvg.hpl.hp.com.bean.GraphStatisticsResultBean;
 import tvg.hpl.hp.com.bean.QueryResultBean;
@@ -32,6 +32,7 @@ import tvg.hpl.hp.com.dao.ShowGraphDao;
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.GraphsonUtil;
 import tvg.hpl.hp.com.validation.GetGraphStatisticsBeanValidation;
+
 
 
 /**
@@ -48,6 +49,7 @@ import tvg.hpl.hp.com.validation.GetGraphStatisticsBeanValidation;
 @Path("/GetGraphStatistics")
 public class GetGraphStatisticsService {
 	static Logger log = LoggerFactory.getLogger(GetGraphStatisticsService.class);
+
 	private StartBfsBean startBfsBean;
 	private ShowGraphDao showGraphDao;
 	private String responseJsonErrorMessage;
@@ -139,5 +141,10 @@ public class GetGraphStatisticsService {
 			}
 		} 
 		return response;
+
+
+		}
+
 	}
-}
+
+

@@ -17,12 +17,15 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.bean.GraphStatisticsResultBean;
+import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.util.DataBaseUtility;
+
+
 
 public class GetGraphStatisticsDao {
 	static Logger log = LoggerFactory.getLogger(GetGraphStatisticsDao.class);
+	
 	private BasicDataSource datasource;
 	private Connection connection;
 	private PreparedStatement pstmt1;
