@@ -243,7 +243,7 @@ public class StartBfsDao {
 				vertices.add(destination);
 			}
 		} catch (Exception ex) {
-			log.error(ex.getMessage());
+			log.error("Error in getting vertices by task id :"+ex.getMessage());
 		} finally {
 			try {
 				if (pstmt != null)
@@ -253,7 +253,7 @@ public class StartBfsDao {
 				if (connection != null)
 					connection.close();
 			} catch (Exception ex) {
-				log.error(ex.getMessage());
+				log.error("Error in closing resources :"+ex.getMessage());
 			}
 		}
 		return vertices;
@@ -277,7 +277,7 @@ public class StartBfsDao {
 				nodeMetaDataMap.put(String.valueOf(resultset.getLong("node_id")), nodeMetaDataList);
 			}
 		} catch (SQLException e) {
-			log.error(e.getMessage());
+			log.error("Error in getting NodeMetadata from the Database :"+e.getMessage());
 		} finally {
 			try {
 				if (pstmt != null)
@@ -287,7 +287,7 @@ public class StartBfsDao {
 				if (connection != null)
 					connection.close();
 			} catch (Exception ex) {
-				log.error(ex.getMessage());
+				log.error("Error in closing resources in getNodeMetaDataList() :"+ex.getMessage());
 			}
 		}
 		log.info("Node Meta Data Size:"+nodeMetaDataMap.size());

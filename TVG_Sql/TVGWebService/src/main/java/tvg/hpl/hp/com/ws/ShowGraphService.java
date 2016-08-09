@@ -3,7 +3,6 @@ package tvg.hpl.hp.com.ws;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -20,19 +19,14 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import tvg.hpl.hp.com.bean.GetGraphBean;
 import tvg.hpl.hp.com.bean.QueryResultBean;
 import tvg.hpl.hp.com.bean.ResponseErrorMessageBean;
 import tvg.hpl.hp.com.bean.ResponseMessageBean;
 import tvg.hpl.hp.com.bean.ShowGraphBean;
-import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.dao.ShowGraphDao;
-import tvg.hpl.hp.com.dao.StartBfsDao;
 import tvg.hpl.hp.com.services.ExtractSubGraph;
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.GraphsonUtil;
-import tvg.hpl.hp.com.util.ManageAppProperties;
-import tvg.hpl.hp.com.validation.GetGraphBeanValidation;
 import tvg.hpl.hp.com.validation.ShowGraphBeanValidation;
 import tvg.hpl.hp.com.websocket.TVGWidget;
 

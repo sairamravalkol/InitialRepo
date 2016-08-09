@@ -156,9 +156,7 @@ public class StartBfsService implements Runnable {
 		 */
 		Map<String, List<List<String>>> subGraph = new HashMap<>();
 		subGraph = new GetSubGraph(startBfsBean, taskId).executeQuery();
-		log.info("SubGraph Size:" + subGraph.size() + " SubGraph:" + subGraph);
-
-		System.out.println("print:" + subGraph);
+		log.info("SubGraph Size:" + subGraph.size());
 
 		if (subGraph.size() > 0) {
 
