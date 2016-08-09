@@ -1,19 +1,21 @@
+/**
+ * 
+ */
 package tvg.hpl.hp.com.bean;
 
 /**
  * @author sarmaji
  *
  */
-
-public class ResponseMessageBean {
-	private String tid;
+public class QueryResultBean {
+	private String taskId;
 	private String status;
 	
-	public String getTid() {
-		return tid;
+	public String getTaskId() {
+		return taskId;
 	}
-	public void setTid(String tid) {
-		this.tid = tid;
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 	public String getStatus() {
 		return status;
@@ -21,7 +23,4 @@ public class ResponseMessageBean {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
-
 }
