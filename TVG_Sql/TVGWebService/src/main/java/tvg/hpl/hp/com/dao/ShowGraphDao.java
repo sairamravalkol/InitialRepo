@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import tvg.hpl.hp.com.bean.QueryResultBean;
 import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.util.DataBaseUtility;
 
@@ -29,6 +30,7 @@ public class ShowGraphDao {
 	private Connection connection;
 	private PreparedStatement pstmt;
 	private ResultSet resultset;
+	private QueryResultBean responseBean;
 
 	public ShowGraphDao() {
 		// TODO Auto-generated constructor stub
@@ -40,34 +42,28 @@ public class ShowGraphDao {
 	 * @param queryBean StartBfsBean object having taskId
 	 * @return instance of StartBfsBean.
 	 */
-	public StartBfsBean checkTaskIdStatus(StartBfsBean queryBean) {
+	public QueryResultBean checkTaskIdStatus(String taskId) {
 
 		// checking queryBean object is null or not
-		if(queryBean != null) {
+		if(taskId != null) {
 			datasource = DataBaseUtility.getVerticaDataSource();
 			try {
-				String taskId = queryBean.getTaskId();
 				String query ="SELECT task_id,request_status FROM tvg4tm.ws_user_query WHERE task_id = " + taskId;
 				System.out.println("Query : " + query);
-				log.info(query);
-
+				log.info("checkTaskIdStatus:"+query);
 				connection = datasource.getConnection();
 				connection.setAutoCommit(false);
 				pstmt = connection.prepareStatement(query);
 				resultset = pstmt.executeQuery();
-
 				// setting  task id and status code into queryBean instance
 				while(resultset.next())
 				{
-					queryBean.setTaskId(resultset.getString("task_id"));
-					queryBean.setStatus(resultset.getString("request_status"));
+					responseBean = new QueryResultBean();
+					responseBean.setTaskId(resultset.getString("task_id"));
+					responseBean.setStatus(resultset.getString("request_status"));
 				} // end while
-
-
-
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Error in checkTaskIdStatus method:"+e.getMessage());
 			}finally{
 				try{
 					if(pstmt != null)
@@ -75,13 +71,13 @@ public class ShowGraphDao {
 					if(connection != null)
 						connection.close();					
 				}catch(Exception ex){
-
+					log.error(ex.getMessage());
 				} // inner catch
 			} // end finally block
 
 		} // end if
 
-		return queryBean;
+		return responseBean;
 	} // end checkTaskIdStatus()
 
 } // end ShowGraphDao
