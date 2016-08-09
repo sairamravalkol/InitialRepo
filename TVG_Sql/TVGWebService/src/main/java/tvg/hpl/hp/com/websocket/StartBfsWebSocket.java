@@ -34,23 +34,16 @@ public class StartBfsWebSocket {
 
 	@OnMessage
 	public String onMessage(String jsonsubGraph, Session session) {
-		log.info("Server recevied message");
-		try {
-			log.info("Number of Clients:" + clients.size());
+		log.info("6. Server recevied SubGraph:"+jsonsubGraph);
+		log.info("Number of Clients Connected:" + clients.size());
 			for (Session s : clients) {
 				try {
-				//	JSONObject jObj = new JSONObject(jsonsubGraph);
 					s.getBasicRemote().sendText(jsonsubGraph);
-				//	s.getBasicRemote().sendObject(jObj);
+					log.info("Server:send Subgraph to the Client");
 					System.out.println("send subGraph to the client ");
 				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					log.error("Error in sending Subgraph from server to the Client:"+e.getMessage());
 			}
-		} catch (Exception e) {
-			//e.printStackTrace();
-			System.out.println("Error :"+e.getMessage());
-			log.error("error:"+e.toString());
 		}
 		return "message was received by the server socket and processed: " + jsonsubGraph;
 	}
@@ -62,7 +55,7 @@ public class StartBfsWebSocket {
 		try {
 			session.getBasicRemote().sendText("Connected to the WebSocket Server");
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Error in Opening WebSocket Session for Client in onOpen(Session session) method.");
 		}
 	}
 
