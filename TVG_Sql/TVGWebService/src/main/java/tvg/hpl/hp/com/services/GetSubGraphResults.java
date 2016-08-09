@@ -1,26 +1,31 @@
-package tvg.hpl.hp.com.dao;
+package tvg.hpl.hp.com.services;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import tvg.hpl.hp.com.bean.StartBfsBean;
+import tvg.hpl.hp.com.dao.StartBfsDao;
 
 public class GetSubGraphResults implements Callable<Map<String, List<List<String>>>> {
+	static Logger log = LoggerFactory.getLogger(GetSubGraphResults.class);
 	Map<String, List<List<String>>> subGraph = new HashMap<>();
-	private StartBfsBean queryBean;
+	private String taskId; 
+	private String fetchSize;
 
-	public GetSubGraphResults(StartBfsBean bfsBean) {
-		// TODO Auto-generated constructor stub
-		queryBean = bfsBean;
+	public GetSubGraphResults(String taskIdPara, String fetchSizePara) {
+		this.taskId = taskIdPara;
+		this.fetchSize = fetchSizePara;
 	}
 	
 	@Override
 	public Map<String, List<List<String>>> call() throws Exception {
-		System.out.println("Executor service executing");
-		StartBfsDao bfsDao = new StartBfsDao();
-		subGraph = bfsDao.getSubgraphWithTaskId(queryBean);
+		log.info("Executor Service Fetching Results from the Database");
+		StartBfsDao startBfsDao = new StartBfsDao();
+		subGraph = startBfsDao.getSubgraphWithTaskId(taskId, fetchSize);
+		log.info("Result SubGraph Size:"+subGraph.size());
 		return subGraph;
 	}
 

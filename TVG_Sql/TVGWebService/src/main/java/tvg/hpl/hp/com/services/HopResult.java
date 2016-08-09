@@ -1,4 +1,4 @@
-package tvg.hpl.hp.com.dao;
+package tvg.hpl.hp.com.services;
 
 /**
  * @author sarmaji
