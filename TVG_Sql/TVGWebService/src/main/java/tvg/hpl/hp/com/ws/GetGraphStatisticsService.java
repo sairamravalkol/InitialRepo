@@ -76,7 +76,7 @@ public class GetGraphStatisticsService {
 	@ApiOperation(value = "The API will return different graph statistics that are TBD. In particular it will return the time range that the graph correspond to,"
 			+ " the seed vertices and hop count. These should be stored as part of the handling of StartBFS. Additional statistics on a result graph (such as performance related statistics)"
 			+ " might be required and will returned in a formatted JSON.")
-	@ApiResponses(value = { @ApiResponse(code = 202, message = "Successful"),@ApiResponse(code =400, message = "Error on Input") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"),@ApiResponse(code =400, message = "Error on Input") })
 	public Response getGraphStatistics(@ApiParam(required=true,name="tid",value="The id of a previously computed graph which resulted from a call to StartBFS")
 										@QueryParam("tid") String taskId) {
 		

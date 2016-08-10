@@ -42,7 +42,7 @@ import tvg.hpl.hp.com.validation.DeleteGraphBeanValidation;
  * @version 1.0 22/07/2016
  */
 @Path("/DeleteGraph")
-@Api("/DeleteGraph")
+@Api(value="/DeleteGraph")
 public class DeleteGraphService {
 	static Logger log = LoggerFactory.getLogger(DeleteGraphService.class);
 	private QueryResultBean queryResultBean;
@@ -68,7 +68,7 @@ public class DeleteGraphService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.TEXT_PLAIN)
 	@ApiOperation(value = "The function will erase the graph that it attached to tid.")
-	@ApiResponses(value = { @ApiResponse(code = 202, message = "Successful"),@ApiResponse(code =400, message = "Error on Input") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"),@ApiResponse(code =400, message = "Error on Input") })
 	public Response deleteGraph(@ApiParam(required=true,name="tid",value="The id of a previously computed graph which resulted from a call to StartBFS")
 								@QueryParam("tid") String taskId) {
 
