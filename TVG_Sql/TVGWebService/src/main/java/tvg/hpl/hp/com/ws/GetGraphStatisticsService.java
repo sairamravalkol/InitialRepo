@@ -8,7 +8,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,6 +21,12 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 import tvg.hpl.hp.com.bean.GetGraphStatisticsBean;
 import tvg.hpl.hp.com.bean.GraphStatisticsResultBean;
 import tvg.hpl.hp.com.bean.QueryResultBean;
@@ -46,7 +52,9 @@ import tvg.hpl.hp.com.validation.GetGraphStatisticsBeanValidation;
  * @version 1.0.0 07/08/2016
  *
  */
+
 @Path("/GetGraphStatistics")
+@Api(value="/GetGraphStatistics")
 public class GetGraphStatisticsService {
 	static Logger log = LoggerFactory.getLogger(GetGraphStatisticsService.class);
 
@@ -63,8 +71,14 @@ public class GetGraphStatisticsService {
 	}
 
 	@GET
+	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGraphStatistics(@QueryParam("tid") String taskId) {
+	@ApiOperation(value = "The API will return different graph statistics that are TBD. In particular it will return the time range that the graph correspond to,"
+			+ " the seed vertices and hop count. These should be stored as part of the handling of StartBFS. Additional statistics on a result graph (such as performance related statistics)"
+			+ " might be required and will returned in a formatted JSON.")
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Successful"),@ApiResponse(code =400, message = "Error on Input") })
+	public Response getGraphStatistics(@ApiParam(required=true,name="tid",value="The id of a previously computed graph which resulted from a call to StartBFS")
+										@QueryParam("tid") String taskId) {
 		
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

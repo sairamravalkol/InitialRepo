@@ -3,13 +3,13 @@ package tvg.hpl.hp.com.ws;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -22,15 +22,18 @@ import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 import tvg.hpl.hp.com.bean.GetGraphBean;
 import tvg.hpl.hp.com.bean.QueryResultBean;
 import tvg.hpl.hp.com.bean.ResponseErrorMessageBean;
 import tvg.hpl.hp.com.dao.ShowGraphDao;
-import tvg.hpl.hp.com.dao.StartBfsDao;
 import tvg.hpl.hp.com.services.ExtractSubGraph;
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.GraphsonUtil;
-import tvg.hpl.hp.com.util.ManageAppProperties;
 import tvg.hpl.hp.com.validation.GetGraphBeanValidation;
 
 /**
@@ -43,6 +46,7 @@ import tvg.hpl.hp.com.validation.GetGraphBeanValidation;
  * @version 1.0 27/07/2016
  */
 @Path("/GetGraph")
+@Api(value="/GetGraph")
 public class GetGraphService {
 	static Logger log = LoggerFactory.getLogger(GetGraphService.class);
 	private GetGraphBean getGraphBean;
@@ -50,7 +54,6 @@ public class GetGraphService {
 	private ShowGraphDao showGraphDao;
 	private String responseJsonErrorMessage;
 	private String jsonStringGraph;
-	private String fetch_size;
 	private Response response;
 
 	public GetGraphService() {
@@ -70,7 +73,12 @@ public class GetGraphService {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGraph(@QueryParam("tid") String taskId) throws JSONException {
+	@Consumes(MediaType.TEXT_PLAIN)
+	@ApiResponses(value = { @ApiResponse(code=202, message = "Successful"),@ApiResponse(code = 400, message = "Error on Input") })
+	@ApiOperation(value = "The API will instruct the web service to extract a result graph, "
+			+ "which is already stored in Vertica. The service will format the results according to a GraphSON schema and return it to the caller.")
+	public Response getGraph(@ApiParam(required=true,value="The id which identifies the invocation of a previously completed StartBFS")
+							 @QueryParam("tid") String taskId) throws JSONException {
 
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

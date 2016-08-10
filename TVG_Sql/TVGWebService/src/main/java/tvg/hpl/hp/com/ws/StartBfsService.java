@@ -14,6 +14,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,6 +25,11 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import tvg.hpl.hp.com.bean.QueryResultBean;
 import tvg.hpl.hp.com.bean.ResponseMessageBean;
 import tvg.hpl.hp.com.bean.StartBfsBean;
@@ -35,6 +41,7 @@ import tvg.hpl.hp.com.validation.StartBfsBeanValidation;
 import tvg.hpl.hp.com.websocket.TVGWidget;
 
 @Path("/StartBfs")
+@Api(value="/StartBfs")
 public class StartBfsService implements Runnable {
 	static Logger log = LoggerFactory.getLogger(StartBfsService.class);
 	private StartBfsBean startBfsBean;
@@ -80,9 +87,17 @@ public class StartBfsService implements Runnable {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response startBfs(@QueryParam("startTime") String startTime, @QueryParam("endTime") String endTime,
-			@QueryParam("vertices") String vertices, @QueryParam("hop") String hop,
-			@QueryParam("push_when_done") String push_when_done) {
+	@Consumes(MediaType.TEXT_PLAIN)
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Success"),
+			@ApiResponse(code =400, message = "Error") })
+	@ApiOperation(value = "Compute K-hop between start time and end time to a depth of hops starting from [vertices]."
+			+ " The results in the form of a set of tuples (source vertex, target vertex, epoch, tid) will be stored in"
+			+ " a single result table in Vertica. Each resulting graph will be indexed by its task id.")
+	public Response startBfs(@ApiParam(required=true,value="The start of the selection time interval")@QueryParam("startTime") String startTime,
+			@ApiParam(required=true,value="The end of the selection time interval")@QueryParam("endTime") String endTime,
+			@ApiParam(required=true,value="A comma separated list of vertex ids to start BFS from")@QueryParam("vertices") String vertices, 
+			@ApiParam(required=true,value="The depth of BFS search")@QueryParam("hop") String hop,
+			@ApiParam(required=true,value=" A Boolean flag 0 or 1 ")@QueryParam("push_when_done") String push_when_done) {
 
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

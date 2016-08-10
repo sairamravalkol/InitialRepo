@@ -6,6 +6,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -16,6 +17,11 @@ import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
 import tvg.hpl.hp.com.bean.DeleteGraphBean;
 import tvg.hpl.hp.com.bean.QueryResultBean;
 import tvg.hpl.hp.com.bean.ResponseErrorMessageBean;
@@ -36,6 +42,7 @@ import tvg.hpl.hp.com.validation.DeleteGraphBeanValidation;
  * @version 1.0 22/07/2016
  */
 @Path("/DeleteGraph")
+@Api("/DeleteGraph")
 public class DeleteGraphService {
 	static Logger log = LoggerFactory.getLogger(DeleteGraphService.class);
 	private QueryResultBean queryResultBean;
@@ -59,7 +66,11 @@ public class DeleteGraphService {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteGraph(@QueryParam("tid") String taskId) {
+	@Consumes(MediaType.TEXT_PLAIN)
+	@ApiOperation(value = "The function will erase the graph that it attached to tid.")
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Successful"),@ApiResponse(code =400, message = "Error on Input") })
+	public Response deleteGraph(@ApiParam(required=true,name="tid",value="The id of a previously computed graph which resulted from a call to StartBFS")
+								@QueryParam("tid") String taskId) {
 
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();

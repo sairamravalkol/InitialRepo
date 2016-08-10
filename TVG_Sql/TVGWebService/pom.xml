@@ -49,6 +49,11 @@
 			<version>4.12</version>
 		</dependency>
 		<dependency>
+	    	<groupId>io.swagger</groupId>
+		    <artifactId>swagger-jersey2-jaxrs</artifactId>
+		    <version>1.5.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.hpe.vertica</groupId>
 			<artifactId>vertica</artifactId>
 			<version>7.2.1-0</version>
