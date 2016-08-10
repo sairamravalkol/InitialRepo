@@ -25130,12 +25130,15 @@ SwaggerUi.Views.MainView = Backbone.View.extend({
       // Localhost override
       this.model.validatorUrl = null;
     } else {
-      // Default validator
+    	// Disabled Default validator by Jiban as our webservice is internal
+      // Default validator 
       if(window.location.protocol === 'https:') {
-        this.model.validatorUrl = 'https://online.swagger.io/validator';
+      //  this.model.validatorUrl = 'https://online.swagger.io/validator';
+        this.model.validatorUrl = null;
       }
       else {
-        this.model.validatorUrl = 'http://online.swagger.io/validator';
+        //this.model.validatorUrl = 'http://online.swagger.io/validator';
+    	  this.model.validatorUrl = null;
       }
     }
 
