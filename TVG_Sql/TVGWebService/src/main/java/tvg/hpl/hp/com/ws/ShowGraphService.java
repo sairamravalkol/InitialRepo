@@ -73,7 +73,7 @@ public class ShowGraphService implements Runnable {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.TEXT_PLAIN)
-	@ApiResponses(value = { @ApiResponse(code=202, message = "Successful"),@ApiResponse(code = 400, message = "Error on Input") })
+	@ApiResponses(value = { @ApiResponse(code=200, message = "Ok"),@ApiResponse(code = 400, message = "Error on Input") })
 	@ApiOperation(value = "The API will instruct the web service to send a new (result) graph,"
 			+ " which is already stored in Vertica, to the attached TVG widget. The service will format the results according to a GraphSON schema")
 	public Response showGraph(@ApiParam(required=true,value="The id which identifies the invocation of a previously completed StartBFS")

@@ -88,7 +88,7 @@ public class StartBfsService implements Runnable {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.TEXT_PLAIN)
-	@ApiResponses(value = { @ApiResponse(code = 202, message = "Success"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Ok"),
 			@ApiResponse(code =400, message = "Error") })
 	@ApiOperation(value = "Compute K-hop between start time and end time to a depth of hops starting from [vertices]."
 			+ " The results in the form of a set of tuples (source vertex, target vertex, epoch, tid) will be stored in"
