@@ -49,6 +49,11 @@
 			<version>4.12</version>
 		</dependency>
 		<dependency>
+	    	<groupId>io.swagger</groupId>
+		    <artifactId>swagger-jersey2-jaxrs</artifactId>
+		    <version>1.5.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.hpe.vertica</groupId>
 			<artifactId>vertica</artifactId>
 			<version>7.2.1-0</version>
@@ -68,6 +73,12 @@
 			<artifactId>jersey-media-moxy</artifactId>
 			<version>${jersey.version}</version>
 		</dependency>
+		<!-- Jersey extension module providing support for Bean Validation (JSR-349) API.-->
+		<dependency>
+		    <groupId>org.glassfish.jersey.ext</groupId>
+		    <artifactId>jersey-bean-validation</artifactId>
+		    <version>${jersey.version}</version>
+		</dependency> 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -144,7 +155,7 @@
 				<version>2.2</version>
 				<configuration>
 					<!-- 16.25.146.111 -->
-					<url>http://localhost:8080/manager/text</url>
+					<url>http://tvg-simulator-ha01.labs.hpecorp.net:8080/manager/text</url>
 					<server>localhost</server>
 					<path>/TVGWebService</path>
 				</configuration>

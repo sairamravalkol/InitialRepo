@@ -52,23 +52,22 @@ public class TVGServletContextListener extends HttpServlet implements ServletCon
     	/**
     	 * ManageAppProperties initializes the resources
     	 */
-    	log.info("Initialise Application Property");
+    	log.info("Initialize Application Property");
     	ManageAppProperties.getInstance();
     	/**
     	 * Create DatabaseConnection Pool
     	 * 
     	 */
-    	log.info("Initialise Database Connection and create connection pooling");
+    	log.info("Initialize Database Connection and create connection pooling");
     	BasicDataSource datasource = DataBaseUtility.getVerticaDataSource();
-    	System.out.println("Active Database connection:"+datasource.getNumActive());
-    }
+      }
 
 	/**
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent sce)  { 
          // TODO Auto-generated method stub
-    	System.out.println("ServletContextListener destroyed");
+    	log.info("ServletContextListener Destroyed");
     	Enumeration<Driver> drivers = DriverManager.getDrivers(); 
     	Driver driver = null;
     	// clear drivers
@@ -76,7 +75,7 @@ public class TVGServletContextListener extends HttpServlet implements ServletCon
             try {
                 driver = drivers.nextElement();
                 DriverManager.deregisterDriver(driver);
-                System.out.println("Unregistered JDBC driver");
+               log.info("Unregistered JDBC driver");
             } catch (SQLException ex) {
                 // deregistration failed, might want to do something, log at the very least
             	ex.printStackTrace();

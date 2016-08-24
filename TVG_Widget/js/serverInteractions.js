@@ -10,7 +10,8 @@ function initWebSocket()
 	   console.log("WS: WebSocket is supported by your Browser!");
 	   
 	   // Open a web socket
-	   var ws = new WebSocket(webSocketURL);
+	   //var ws = new WebSocket(webSocketURL);
+	  var ws = new WebSocket('ws://localhost:8080/TVGWebService/startBfs'); 
 		
 	   ws.onopen = function()
 	   {

@@ -6,14 +6,14 @@ package tvg.hpl.hp.com.bean;
  */
 
 public class ResponseMessageBean {
-	private String task_id;
+	private String tid;
 	private String status;
 	
-	public String getTask_id() {
-		return task_id;
+	public String getTid() {
+		return tid;
 	}
-	public void setTask_id(String task_id) {
-		this.task_id = task_id;
+	public void setTid(String tid) {
+		this.tid = tid;
 	}
 	public String getStatus() {
 		return status;

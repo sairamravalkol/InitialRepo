@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.ManageAppProperties;
-import tvg.hpl.hp.com.ws.StartBfsService;
 
 public class TVGWidget {
 	static Logger log = LoggerFactory.getLogger(TVGWidget.class);
@@ -32,13 +31,12 @@ public class TVGWidget {
 			webSocketAddress=sb.toString();		
 			log.info("1. WebsocketAddress:"+webSocketAddress);
 		}catch(Exception ex){
-			ex.printStackTrace();
+			log.error("Error in Initilization of the TVGWidget() Constructor:"+ex.getMessage()); 
 		}
 	}
 
 	private void initializeWebSocket() throws URISyntaxException {
-		//System.out.println("REST service: open websocket client at " + webSocketAddress);
-		log.info("2.REST service: open websocket client at " + webSocketAddress);
+		log.info("2.Open websocket client at " + webSocketAddress);
 		webSocketClient = new StartBfsWebSocketClient(new URI(webSocketAddress));
 	}
 
@@ -47,7 +45,9 @@ public class TVGWidget {
 			try {
 					initializeWebSocket();
 				} catch (URISyntaxException e) {
-				e.printStackTrace();
+				log.error("Error URI Couldn't be Parsed in sendSubGraphOverSocket:"+e.getMessage());
+			}catch (RuntimeException e) {
+				log.error("WebSocket Runtime Exception:"+e.getMessage());
 			}
 		}
 		webSocketClient.sendSubGraph(jsonsubGraph);

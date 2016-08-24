@@ -6,22 +6,17 @@ package tvg.hpl.hp.com.websocket;
  */
 import java.net.URI;
 
-import javax.json.JsonObject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
 import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import tvg.hpl.hp.com.ws.StartBfsService;
 
 @ClientEndpoint
 public class StartBfsWebSocketClient {
@@ -29,7 +24,7 @@ public class StartBfsWebSocketClient {
 	Session userSession = null;
 	public StartBfsWebSocketClient(URI serverEndpointURI) {
 		try {
-			log.info("3.");
+			log.info("3.Obtain a new instance of a WebSocketContainer & Connect to the Server EndPoint");
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, serverEndpointURI);
 		} catch (Exception e) {
@@ -66,13 +61,12 @@ public class StartBfsWebSocketClient {
 	 */
 	@OnMessage
 	public void onMessage(String jsonsubGraph) {
-		log.info("client: received message " + jsonsubGraph);
+		log.info("7. Client: received Subgraph From Server: " + jsonsubGraph);
 	}
 
 	public void sendSubGraph(String jsonsubGraph) {
-		log.info("client sendSubGraph:"+jsonsubGraph);
-		try{
-			
+		log.info("5. client send SubGraph:"+jsonsubGraph);
+		try{			
 		this.userSession.getAsyncRemote().sendText(jsonsubGraph);
 		}catch(Exception ex){
 			log.error("Error sending message :"+ex.getMessage());
