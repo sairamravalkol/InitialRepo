@@ -15,19 +15,25 @@ import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.DataBaseUtility;
 
-public class HopTwoDao {
+public class HopTwoDao implements Runnable{
 	static Logger log = LoggerFactory.getLogger(HopTwoDao.class);
 	private BasicDataSource datasource;
-	private String query_table, result_table;
+	private String query_table, result_table,test_table;
 	private StartBfsBean startBfsBean;
 	private String taskId;
 	int[] insert_record_count;
+	
+	public HopTwoDao(StartBfsBean startBfsBeanPara, String taskIdPara) {
+		this.startBfsBean = startBfsBeanPara;
+		this.taskId = taskIdPara;
+	}
 
-	public HopTwoDao(StartBfsBean startBfsBeanPara, String taskIdPara, String querytable, String resulttable) {
+	public HopTwoDao(StartBfsBean startBfsBeanPara, String taskIdPara, String querytable, String resulttable, String testtable) {
 		startBfsBean = startBfsBeanPara;
 		taskId = taskIdPara;
 		query_table = querytable;
 		result_table = resulttable;
+		test_table = testtable;
 	}
 
 	public int findHopTwoNeighbours() {
@@ -49,9 +55,10 @@ public class HopTwoDao {
 			 * First get Hop One neighbour.
 			 * 
 			 */
-			log.info("Hop Two is calling findHopOneNeighbours");
-			new HopOneDao(startBfsBean, taskId, query_table, result_table).findHopOneNeighbours();
+		//	log.info("Hop Two is calling findHopOneNeighbours");
+			new HopOneDao(startBfsBean, taskId, query_table, result_table,test_table).findHopOneNeighbours();
 			try {
+			//	System.out.println("Hop2 thread");
 				datasource = DataBaseUtility.getVerticaDataSource();
 				conn = datasource.getConnection();
 				conn.setAutoCommit(false);
@@ -70,9 +77,8 @@ public class HopTwoDao {
 						+ " , tvg4tm.K1 AS k1_neighbours "
 						+ " WHERE destination = k1_neighbours.neighbour AND epoch_time >= " + start_time
 						+ " AND epoch_time <=" + end_time + " AND destination not in (" + vertices+ " ) ";
-						/*+ "UNION SELECT DISTINCT neighbour AS k2_neighbours FROM tvg4tm.K1 WHERE neighbour not in ("
-						+ vertices + ")";*/
-				log.info("Find Hop Two Neighbours Query:" + query);
+						
+				//log.info("Find Hop Two Neighbours Query:" + query);
 				pstmt = conn.prepareStatement(query);
 				resultset = pstmt.executeQuery();
 				while (resultset.next()) {
@@ -93,7 +99,7 @@ public class HopTwoDao {
 					conn.rollback();
 				}
 				conn.commit();
-				log.info("Size of HopTwo Neighbours :"+neighbourset.size());
+			//	log.info("Size of HopTwo Neighbours :"+neighbourset.size());
 			} catch (SQLException e) {
 				try {
 					conn.rollback();
@@ -119,14 +125,19 @@ public class HopTwoDao {
 					log.error("Error in closing connections in findHopTwoNeighbours() method:" + ex.getMessage());
 				}
 			}
-			if (startBfsBean.getHop().equals(ApplicationConstants.TVG_HOP_THREE))
-				this.storeHopTwoEdges(startBfsBean, taskId);
+			if (startBfsBean.getHop().equals(ApplicationConstants.TVG_HOP_THREE)) {
+				HopTwoDao runnable = new HopTwoDao(startBfsBean, taskId, query_table, result_table, test_table);
+				Thread thread = new Thread(runnable);
+				thread.start(); 
+				//this.storeHopTwoEdges(startBfsBean, taskId);
+			}
 		}
 		return insert_record_count.length;
 	}
 
 	public int storeHopTwoEdges(StartBfsBean startBfsBean, String taskId) {
 		log.info("Find Hope Two Edges and Store in Result Table");
+		int returnval=0;
 		Connection conn = null;
 		ResultSet resultset = null;
 		PreparedStatement pstmt = null;
@@ -141,21 +152,22 @@ public class HopTwoDao {
 			String start_time = startBfsBean.getStartTime();
 			String end_time = startBfsBean.getEndTime();
 			
-			String query = " select distinct T.source,T.destination, max(T.epoch_time) as epoch_time  from tvg4tm.dns_data_regression_test T  "
+			String query = " select distinct " + taskId + " as task_id, T.source,T.destination, max(T.epoch_time) as epoch_time  FROM "+ query_table +" T  "
 					+ " Join tvg4tm.K1 K1 on T.source=K1.neighbour join  tvg4tm.K2 K2 on T.destination = K2.K2_neighbours "
 					+ " where epoch_time>" + start_time + " and epoch_time<" + end_time
 					+ " group by T.source, T.destination  "
-					+ " Union select distinct T.source,T.destination,max(T.epoch_time) as epoch_time  from tvg4tm.dns_data_regression_test T "
+					+ " Union select distinct " + taskId + " as task_id, T.source,T.destination,max(T.epoch_time) as epoch_time  FROM "+ query_table +" T "
 					+ " Join tvg4tm.K2 K2 on T.source= K2.K2_neighbours  join  tvg4tm.K1 K1 on T.destination =  K1.neighbour"
 					+ " where epoch_time>" + start_time + " and epoch_time<" + end_time
 					+ "  group by T.source,T.destination"; // limit 10";
 			
-			System.out.println("Find Hop Two Edges Query:" + query);
-			String insert_query = " INSERT INTO tvg4tm.ws_result (task_id,source,destination,epoch_time)"
-					+ " VALUES(?,?,?,?)";
-			pstmt = conn.prepareStatement(query);
+		//	log.info("Find Hop Two Edges Query:" + query);
+			String insert_query = " INSERT INTO "+result_table+" (task_id,source,destination,epoch_time) "+ query;
+			//		+ " VALUES(?,?,?,?)";
+			//pstmt = conn.prepareStatement(query);
 			pstmtInsert = conn.prepareStatement(insert_query);
-			resultset = pstmt.executeQuery();
+			 returnval=pstmtInsert.executeUpdate();
+			/*resultset = pstmt.executeQuery();
 			while (resultset.next()) {
 				if (resultset.getLong("source") > resultset.getLong("destination")) {
 					destination = resultset.getLong("source");
@@ -168,10 +180,10 @@ public class HopTwoDao {
 				// destination + " epoch time:" +
 				// resultset.getLong("epoch_time"));
 
-				/**
+				*//**
 				 * Insert subGraph in ws_result table
 				 **
-				 */
+				 *//*
 				pstmtInsert.setLong(1, Long.parseLong(taskId));
 				pstmtInsert.setLong(2, source);
 				pstmtInsert.setLong(3, destination);
@@ -183,8 +195,9 @@ public class HopTwoDao {
 			} catch (SQLException ex) {
 				log.error("Error executing sql queries in storeHopTwoEdges, roll back");
 				conn.rollback();
-			}
+			}*/
 			conn.commit();
+			log.info("Hop2 edges Found:" + insert_record_count.length);
 			// System.out.println("subgraph map :"+subGraph);
 		} catch (Exception e) {
 			try {
@@ -208,6 +221,121 @@ public class HopTwoDao {
 			}
 		}
 
+		//return insert_record_count.length;
+		return  returnval;
+	}
+	public int storeHopTwoEdgesModified(StartBfsBean startBfsBean, String taskId) {
+		log.info("Find Hope Two Edges and Store in Result Table Modified version taskID :"+taskId);
+		System.out.println("Find Hope Two Edges and Store in Result Table hopOneObj Modified version");
+		String vertices = startBfsBean.getVertices();
+		String start_time = startBfsBean.getStartTime();
+		String end_time = startBfsBean.getEndTime();
+		if (vertices != null && vertices != "" && start_time != null && start_time != "" && end_time != null
+				&& end_time != "") {	
+		Connection conn = null;
+		ResultSet resultset = null;
+		Statement stmt = null;
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmtInsert = null;
+		try {
+			datasource = DataBaseUtility.getVerticaDataSource();
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			stmt = conn.createStatement();
+			Long source = 0L;
+			Long destination = 0L;
+			
+			String hopOneQuery = "select  distinct source,destination,max(epoch_time) as max_epoch_time FROM "+ query_table
+					+ " INNER JOIN " +test_table +" ON "+ query_table+".destination="+test_table+".start_vertex "
+					+ "	WHERE "+test_table+".start_vertex="+vertices +" AND "+ query_table+".epoch_time>='" + start_time + "' "
+					+ " AND "+ query_table+".epoch_time<='" + end_time + "' GROUP BY "+ query_table+".source,"+ query_table+".destination "
+					+ " UNION select distinct source,destination,max(epoch_time) as max_epoch_time FROM "+ query_table+ " INNER JOIN "+ test_table
+					+ " ON "+ query_table+".source="+test_table+".start_vertex WHERE "+test_table+".start_vertex="+ vertices
+					+ " AND "+ query_table+".epoch_time>='" + start_time + "' AND "+ query_table+".epoch_time<='" + end_time + "' "
+					+ " GROUP BY "+ query_table+".source,"+ query_table+".destination ";
+						
+			String hopTwoQuery = "select distinct source,destination,max(epoch_time) as max_epoch_time FROM "+ query_table +" where destination "
+					+ " IN (select distinct source AS Neighbor FROM "+ query_table
+					+ " INNER JOIN "+ test_table + " ON " + query_table+".destination="+ test_table+".start_vertex "
+					+ " WHERE "+test_table+".start_vertex in ("+vertices +") AND "+ query_table+".epoch_time>='" + start_time + "'"
+					+ " AND "+ query_table+".epoch_time<='" + end_time + "' UNION select distinct destination "
+					+ " AS Neighbor FROM "+ query_table +" INNER JOIN "+ test_table + " ON "+ query_table +".source="+test_table+".start_vertex "
+					+ " WHERE "+test_table+".start_vertex IN ("+vertices +") AND "+ query_table+".epoch_time>="+start_time
+					+ " AND "+ query_table+".epoch_time<="+end_time+") AND "+ query_table+".epoch_time>="+start_time
+					+ " AND "+ query_table+".epoch_time<="+end_time +" AND source NOT IN ("+vertices+")"
+					+ " GROUP BY "+ query_table+".source,"+ query_table+".destination "
+					+ " UNION select distinct source,destination,max(epoch_time) FROM "+ query_table +" where source IN (select source AS Neighbor "
+					+ " FROM "+ query_table+" INNER JOIN "+test_table+" ON "+ query_table+".destination="+test_table+".start_vertex "
+					+ " WHERE "+test_table+".start_vertex IN ("+vertices +") AND "+ query_table+".epoch_time>="+start_time
+					+ " AND "+ query_table+".epoch_time<="+end_time +" UNION select distinct destination "
+					+ " AS Neighbor FROM "+ query_table+" INNER JOIN "+test_table+" ON "+ query_table+".source="+test_table+".start_vertex "
+					+ " WHERE "+test_table+".start_vertex IN ("+ vertices +")  AND "+ query_table+".epoch_time>="+start_time +" AND "+ query_table+".epoch_time<="+end_time +")"
+					+ " AND "+ query_table+".epoch_time>="+start_time +" AND "+ query_table+".epoch_time<="+end_time
+					+ " AND destination NOT IN ( " +vertices+" ) GROUP BY "+ query_table+".source,"+ query_table+".destination";
+			
+			String query = hopOneQuery + " UNION " + hopTwoQuery; 
+			System.out.println(query);
+			//log.info(query);
+			String insert_query = " INSERT INTO "+result_table+" (task_id,source,destination,epoch_time)"
+					+ " VALUES(?,?,?,?)";
+			pstmt = conn.prepareStatement(query);
+			pstmtInsert = conn.prepareStatement(insert_query);
+			resultset = pstmt.executeQuery();
+			while (resultset.next()) {
+				if (resultset.getLong("source") < resultset.getLong("destination")) {
+					destination = resultset.getLong("source");
+					source = resultset.getLong("destination");
+				} else {
+					source = resultset.getLong("source");
+					destination = resultset.getLong("destination");
+				}
+			//	log.info("source:" + source + "dest :  " + destination + " epoc time:" + resultset.getLong("max_epoch_time"));
+
+				/**
+				 * Insert subGraph in ws_result table
+				 **
+				 */
+				pstmtInsert.setLong(1, Long.parseLong(taskId));
+				pstmtInsert.setLong(2, source);
+				pstmtInsert.setLong(3, destination);
+				pstmtInsert.setLong(4, resultset.getLong("max_epoch_time"));
+				pstmtInsert.addBatch();
+			}
+			insert_record_count = pstmtInsert.executeBatch();
+			conn.commit();
+			log.info("Modified Hop2 Query Result Table : Number of records inserted:" + insert_record_count.length);
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+				log.error("Error executing the Sql queries in storeHopOneEdges, rollback:"+e.getMessage());
+				e.printStackTrace();
+			} catch (SQLException e1) {
+				log.error("Error in roll back in storeHopOneEdges:"+e1.getMessage());
+			}
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+				if (resultset != null) {
+					resultset.close();
+				}
+			} catch (Exception ex) {
+				log.error("Error in closing connections in storeHopOneEdges method" + ex.getMessage());
+			}
+		}
+		}
 		return insert_record_count.length;
+	}
+
+	@Override
+	public void run() {
+		this.storeHopTwoEdges(startBfsBean, taskId);
 	}
 }
