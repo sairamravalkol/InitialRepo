@@ -35,6 +35,7 @@ import tvg.hpl.hp.com.bean.ResponseMessageBean;
 import tvg.hpl.hp.com.bean.StartBfsBean;
 import tvg.hpl.hp.com.dao.StartBfsDao;
 import tvg.hpl.hp.com.services.GetSubGraph;
+import tvg.hpl.hp.com.services.GetSubGraphModified;
 import tvg.hpl.hp.com.util.ApplicationConstants;
 import tvg.hpl.hp.com.util.GraphsonUtil;
 import tvg.hpl.hp.com.validation.StartBfsBeanValidation;
@@ -102,11 +103,13 @@ public class StartBfsService implements Runnable {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 		startBfsBean = new StartBfsBean();
+	
 		startBfsBean.setStartTime(startTime);
 		startBfsBean.setEndTime(endTime);
 		startBfsBean.setVertices(vertices);
 		startBfsBean.setHop(hop);
 		startBfsBean.setPushWhenDone(push_when_done);
+		
 		Set<ConstraintViolation<StartBfsBean>> constraintViolations = validator.validate(startBfsBean);
 		log.error("StartBfs: Input Validation Error Size:" + constraintViolations.size());
 
@@ -116,8 +119,8 @@ public class StartBfsService implements Runnable {
 			} catch (StartBfsBeanValidation e) {
 				log.error("Error in StartBfsBeanValidation:" + e.getMessage());
 			}
-			response = Response.status(ApplicationConstants.RESPONSE_CODE_BAD_REQUEST).entity(responseJsonErrorMessage)
-					.type(MediaType.APPLICATION_JSON).build();
+			/*response = Response.status(ApplicationConstants.RESPONSE_CODE_BAD_REQUEST).entity(responseJsonErrorMessage)
+					.type(MediaType.APPLICATION_JSON).build();*/
 		} 
 		else {
 
@@ -171,6 +174,7 @@ public class StartBfsService implements Runnable {
 		 */
 		Map<String, List<List<String>>> subGraph = new HashMap<>();
 		subGraph = new GetSubGraph(startBfsBean, taskId).executeQuery();
+		
 		log.info("SubGraph Size:" + subGraph.size());
 
 		if (subGraph.size() > 0) {
@@ -190,13 +194,15 @@ public class StartBfsService implements Runnable {
 			 */
 			log.info("Construct Subgraph in JSON format");
 			GraphsonUtil graphsonObj = new GraphsonUtil();
-			graphsonObj.subGraphJson(subGraph);
+			jsonStringGraph=graphsonObj.subGraphJson(subGraph);
+			System.out.println("Modified jsonstring :"+jsonStringGraph);
 
 			/**
 			 * Parse json object to Json String
 			 * 
 			 */
-			jsonStringGraph = graphsonObj.parseGraphsonFormat();
+			//jsonStringGraph = graphsonObj.parseGraphsonFormat();
+			//System.out.println("original jsonstring :"+jsonStringGraph);
 		}
 
 		/**
