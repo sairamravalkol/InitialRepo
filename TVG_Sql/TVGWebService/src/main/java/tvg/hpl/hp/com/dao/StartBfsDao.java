@@ -185,7 +185,7 @@ public class StartBfsDao {
 				String source = String.valueOf(resultset.getLong("source"));
 				String destination = String.valueOf(resultset.getLong("destination"));
 				String epoch_time = String.valueOf(resultset.getLong("epoch_time"));
-				System.out.println("S:" + source + " " + "D:" + destination + " " + "T:" + epoch_time);
+				//System.out.println("S:" + source + " " + "D:" + destination + " " + "T:" + epoch_time);
 
 				if (subGraph.containsKey(source)) {
 					List<List<String>> mapValue = subGraph.get(source);
@@ -264,8 +264,8 @@ public class StartBfsDao {
 			datasource = DataBaseUtility.getVerticaDataSource();
 			String query = " select node_id,external_flag,machine_type,black_list from tvg4tm.nodes_metadata where"
 					+ " node_id in (" + vertices + ")";
-			log.info("getNodeMetaDataList Query:" + query);
-			System.out.println("getNodeMetaDataList Query:" + query);
+		//	log.info("getNodeMetaDataList Query:" + query);
+		//	System.out.println("getNodeMetaDataList Query:" + query);
 			connection = datasource.getConnection();
 			pstmt = connection.prepareStatement(query);
 			resultset = pstmt.executeQuery();

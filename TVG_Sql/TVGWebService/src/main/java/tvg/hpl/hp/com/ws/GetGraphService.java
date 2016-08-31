@@ -110,12 +110,12 @@ public class GetGraphService {
 					/** if subGraph is empty then throw exception */
 					if (subGraph.size() > 0) {
 						GraphsonUtil graphsonObj = new GraphsonUtil();
-						graphsonObj.subGraphJson(subGraph);
+						jsonStringGraph =	graphsonObj.subGraphJson(subGraph);
 						/**
 						 * Parse json object to Json String
 						 * 
 						 */
-						jsonStringGraph = graphsonObj.parseGraphsonFormat();
+				//		jsonStringGraph = graphsonObj.parseGraphsonFormat();
 	
 						// response.setResult(jsonStringGraph);
 						JSONObject graphobj = new JSONObject(jsonStringGraph);

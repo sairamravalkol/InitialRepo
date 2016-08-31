@@ -80,12 +80,14 @@ var predefined_end_time="1434585599997777";	   // should come from ws or rest ap
 /* ====== Server Interaction ====== */
 
 // == REST == //
-var anonymiseServerUrl = "http://db4s-de-anonymize-service.hpl.hp.com:3001/";
-// var webServerAddress = "http://simpl-l4tm-580-25.u.labs.hpecorp.net";
-// var webServerAddress = "http://l4tm-tvg-ha01.hpl.hp.com";
-var webServerAddress = "http://isaac.hpl.hp.com";
+var anonymiseServerUrlOld = "http://db4s-de-anonymize-service.hpl.hp.com:3001/";
+var anonymiseServerUrl = "http://db4s-de-anonymize-service.labs.hpecorp.net:3001/";
+
+var webServerAddressOld = "http://isaac.hpl.hp.com";
+var webServerAddress = "http://isaac.labs.hpecorp.net";
 var directory = "api/"; // this is the directory where the api's are. This was a CR by UI company. 
 // var directory = ""; // this is the directory where the api's are. This was a CR by UI company.
 
 // == Web Socket == //
-var webSocketURL = "ws://l4tm-tvg-ha01.hpl.hp.com:8083";
+//var webSocketURLOld = "ws://l4tm-tvg-ha01.hpl.hp.com:8083";
+var webSocketURL = "ws://l4tm-tvg-ha01.labs.hpecorp.net:8083";

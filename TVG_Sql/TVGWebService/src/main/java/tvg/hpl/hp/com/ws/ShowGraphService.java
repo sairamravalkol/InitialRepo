@@ -171,13 +171,13 @@ public class ShowGraphService implements Runnable {
 		 */
 		if (subGraph.size() > 0) {
 			GraphsonUtil graphsonObj = new GraphsonUtil();
-			graphsonObj.subGraphJson(subGraph);
+			jsonStringGraph = graphsonObj.subGraphJson(subGraph);
 
 			/**
 			 * Parse json object to Json String
 			 * 
 			 */
-			jsonStringGraph = graphsonObj.parseGraphsonFormat();
+		//	jsonStringGraph = graphsonObj.parseGraphsonFormat();
 			/**
 			 * write results to the TVGwidget through WebSocket
 			 */
