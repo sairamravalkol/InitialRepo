@@ -65,7 +65,7 @@ public class StartBfsWebSocketClient {
 	}
 
 	public void sendSubGraph(String jsonsubGraph) {
-		log.info("5. client send SubGraph:"+jsonsubGraph);
+		log.info("5. client send SubGraph:");
 		try{			
 		this.userSession.getAsyncRemote().sendText(jsonsubGraph);
 		}catch(Exception ex){

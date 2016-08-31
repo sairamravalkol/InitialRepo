@@ -34,7 +34,7 @@ public class StartBfsWebSocket {
 
 	@OnMessage
 	public String onMessage(String jsonsubGraph, Session session) {
-		log.info("6. Server recevied SubGraph:"+jsonsubGraph);
+		log.info("6. Server recevied SubGraph:");
 		log.info("Number of Clients Connected:" + clients.size());
 			for (Session s : clients) {
 				try {
